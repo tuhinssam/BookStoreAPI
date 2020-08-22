@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Body
 from models.user import User
+from models.author import Author
 
 app = FastAPI()
 
@@ -62,4 +63,57 @@ body:
 '''
 @app.patch('/author/name')
 async def patch_author_name(name: str = Body(..., embed = True)):
+    #'embed = True' is used to take body in json format
     return {"name in body": name}
+
+'''
+method: POST
+request: http://127.0.0.1:8000/user/author
+body:
+{   
+	"user":
+	{
+	"id": 1,
+	"name": "123",
+    "password": "123456",
+    "mail": "tuhinssa@gmail.com",
+    "role": "admin"
+	},
+	"author":
+	{
+      "name": "author name1",
+      "book": ["book1","book2"]
+	}
+}
+'''
+@app.post('/user/author')
+async def post_user_and_author(user: User, author: Author):
+    return {'user':user,'author':author}
+
+'''
+method: POST
+request: http://127.0.0.1:8000/user/author/bookstore
+body:
+{   
+	"user":
+	{
+	"id": 1,
+	"name": "123",
+    "password": "123456",
+    "mail": "tuhinssa@gmail.com",
+    "role": "admin"
+	},
+	"author":
+	{
+      "name": "author name1",
+      "book": ["book1","book2"]
+	},
+	"bookstorename":"bookstore1"
+}
+'''
+@app.post('/user/author/bookstore')
+async def post_user_and_author_bookstore(user: User, author: Author, bookstorename: str = Body(..., embed=True)):
+    '''
+    body parameters which are not object should be decalred as Body(..., embed=True)
+    '''
+    return {'user':user,'author':author, 'bookstorename': bookstorename}
